@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate structure
+      run: |
+        test -d skills || exit 1
+        test -d docs || exit 1
+        test -f CLAUDE.md || exit 1
+        echo "Structure validated ✓"
+    
+    - name: Check markdown links
+      uses: lycheeverse/lychee-action@v1
+      with:
+        args: --timeout 30 README.md CLAUDE.md docs/
+      continue-on-error: true
